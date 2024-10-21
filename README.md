@@ -126,7 +126,7 @@ To contact me message me on Facebook or email me at:
 
 `Email`: info@ebdsms.com
 
-`Facebook`: <a href="https://www.facebook.com/M220719" rel="nofollow">Monir Hossain (Shohag)</a> 
+`Facebook`: <a href="https://www.facebook.com/M220719" rel="nofollow">Shohag Hossain</a> 
 
 # Authors
 <a href="https://www.ebdsms.com" rel="nofollow">eBDSMS.com</a>
