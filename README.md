@@ -49,6 +49,75 @@ This document provides instructions for integrating the eBDSMS Flutter project.
 # Getting Started
 > 
 How to use ?
+# yaml
+``` gradle
+  dependencies:
+  flutter:
+  sdk: flutter
+  http: ^0.14.0  # Make sure to use the latest version
+```
+# Implement the eBDSMS class in Flutter:
+``` gradle
+  import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class EBDSMS {
+  String apiKey;
+  String number;
+  String message;
+  String otp;
+  String device;
+  String extra;
+
+  EBDSMS({
+    required this.apiKey,
+    required this.number,
+    required this.message,
+    required this.otp,
+    required this.device,
+    required this.extra,
+  });
+
+  Future<void> sendSms() async {
+    String baseUrl = 'https://client.ebdsms.com/services/send.php';
+    String url = '$baseUrl?key=$apiKey&number=$number&message=$message&devices=$device&type=sms&prioritize=0';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Successfully sent the SMS, handle response
+        print('SMS Sent: ${response.body}');
+      } else {
+        // Error handling
+        print('Failed to send SMS: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred while sending SMS: $e');
+    }
+  }
+}
+
+```
+# How to use:
+> 
+dart
+``` gradle
+ void main() {
+  EBDSMS sms = EBDSMS(
+    apiKey: 'your_api_key',
+    number: 'recipient_number',
+    message: 'Hello, this is your message!',
+    otp: '1234',
+    device: 'device_id',
+    extra: 'extra_info',
+  );
+
+  sms.sendSms();
+}
+
+```
+
 
 
 # Contact With Us
