@@ -26,7 +26,7 @@ dependencies {
 	}
 ```
 
-# Constants for SMS Send STRING
+# Constants for SMS Send String
 Add the following code inside your `Activity`:
 ``` gradle
 
