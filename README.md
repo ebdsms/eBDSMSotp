@@ -43,6 +43,14 @@ Note: Use this code when the sms send button is clicked:
   eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,OTP,DEVICE_NUMBER,null);
   sms.sendSms(this);
 ```
+# eBDSMS SDK Integration for Flutter
+This document provides instructions for integrating the eBDSMS Flutter project. 
+
+# Getting Started
+> 
+How to use ?
+
+
 # Contact With Us
 If you face any problem using this library then feel free to contact me.
 To contact me message me on Facebook or email me at:
