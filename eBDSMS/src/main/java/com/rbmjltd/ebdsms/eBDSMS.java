@@ -16,15 +16,18 @@ public class eBDSMS {
     private String otp;
     private String device;
     private String extra;
+    private String others;
 
 
-    public eBDSMS(String apiKey, String number, String message, String otp, String device, String extra) {
+    public eBDSMS(String apiKey, String number, String message, String otp,
+                  String device, String extra, String others) {
         this.apiKey = apiKey;
         this.number = number;
         this.message = message;
         this.otp = otp;
         this.device = device;
         this.extra = extra;
+        this.others = others;
 
     }
 

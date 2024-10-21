@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.UpdatedCircle.ImageView.UpdatedCircleImg
-        android:id="@+id/CircleImgId"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/updatedcirclepc"
-        android:layout_centerInParent="true"
-        app:civ_border_color="@android:color/holo_orange_dark"
-        app:civ_border_width="2dp" />
+
 
 </RelativeLayout>
