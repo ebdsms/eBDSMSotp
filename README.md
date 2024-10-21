@@ -40,7 +40,7 @@ Add the following code inside your `Activity`:
 # SMS Send Process
 Note: Use this code when the sms send button is clicked:
 ``` gradle
-  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,OTP,DEVICE_NUMBER,null);
+  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,OTP,DEVICE_NUMBER,null,null);
   sms.sendSms(this);
 ```
 # eBDSMS SDK Integration for Flutter
