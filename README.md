@@ -33,14 +33,13 @@ Add the following code inside your `Activity`:
     private static String API_KEY = "YOUR_API_KEY";
     private static String NUMBER = "SEND_NUMBER";
     private static String MESSAGE = "MESSAGE";
-    private static String OTP = "OTP";
     private static String DEVICE_NUMBER = "DEVICE_NUMBER";
 ```  
 
 # SMS Send Process
 Note: Use this code when the sms send button is clicked:
 ``` gradle
-  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,OTP,DEVICE_NUMBER,null,null);
+  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,null,DEVICE_NUMBER,null);
   sms.sendSms(this);
 ```
 # eBDSMS SDK Integration for Flutter
