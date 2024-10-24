@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 > Step 2. Add the dependency to your `build.gradle`:
 ``` gradle
 dependencies {
-	        implementation 'com.github.ebdsms:eBDSMS:2.0.1'
+	        implementation 'com.github.ebdsms:eBDSMS:2.0.2'
 	}
 ```
 
