@@ -46,7 +46,7 @@ Note: Use this code when the sms send button is clicked:
 Note: Use this code send otp:
 ``` gradle
 eBDSMS_OTP otpValue = new eBDSMS_OTP();
-String otp = otpValue.OTPString(6);
+String otp = otpValue.OTPString(6); // Enter the value of the number you want to send OTP like 4,6
 ```
 
 # eBDSMS SDK Integration for Flutter
