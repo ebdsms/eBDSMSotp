@@ -42,6 +42,13 @@ Note: Use this code when the sms send button is clicked:
  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,null,DEVICE_NUMBER,null,null);
  sms.sendSms(this);
 ```
+# OTP Send Process
+Note: Use this code send otp:
+``` gradle
+eBDSMS_OTP otpValue = new eBDSMS_OTP();
+String otp = otpValue.OTPString(6);
+```
+
 # eBDSMS SDK Integration for Flutter
 This document provides instructions for integrating the eBDSMS Flutter project. 
 
