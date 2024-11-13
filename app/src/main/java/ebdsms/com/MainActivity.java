@@ -10,11 +10,11 @@ import com.rbmjltd.ebdsms.eBDSMS;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static String API_KEY = "YOUR_API_KEY";
-    private static String DEVICE_NUMBER = "DEVICE_NUMBER";
+     String API_KEY = "YOUR_API_KEY";
+     String DEVICE_NUMBER = "DEVICE_NUMBER";
 
-    private static String NUMBER = "SEND_NUMBER";
-    private static String MESSAGE = "MESSAGE";
+     String NUMBER = "SEND_NUMBER";
+     String MESSAGE = "MESSAGE";
 
 
     @Override
