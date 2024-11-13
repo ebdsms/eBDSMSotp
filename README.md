@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 > Step 2. Add the dependency to your `build.gradle`:
 ``` gradle
 dependencies {
-	        implementation 'com.github.ebdsms:eBDSMS:2.0.2'
+	        implementation 'com.github.ebdsms:eBDSMS:2.0.3'
 	}
 ```
 
@@ -42,6 +42,13 @@ Note: Use this code when the sms send button is clicked:
  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,null,DEVICE_NUMBER,null,null);
  sms.sendSms(this);
 ```
+# OTP Send Process
+Note: Use this code send otp:
+``` gradle
+eBDSMS_OTP otpValue = new eBDSMS_OTP();
+String otp = otpValue.OTPString(6); // Enter the value of the number you want to send OTP like 4,6
+```
+
 # eBDSMS SDK Integration for Flutter
 This document provides instructions for integrating the eBDSMS Flutter project. 
 
