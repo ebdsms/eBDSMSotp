@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.rbmjltd.ebdsms.eBDSMS_OTP;
 import com.rbmjltd.ebdsms.eBDSMS;
 
 
@@ -22,13 +21,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        eBDSMS.OTP otp = new eBDSMS.OTP();
+        String otpString = otp.OTPString(6);
+        System.out.println(otpString);
 
-        eBDSMS_OTP otpValue = new eBDSMS_OTP();
-        String otp = otpValue.OTPString(6);
-        MESSAGE = MESSAGE + otp;
-
-        eBDSMS sms = new eBDSMS(API_KEY,DEVICE_NUMBER,MESSAGE,null,NUMBER,null,null);
+        eBDSMS sms = new eBDSMS(API_KEY,DEVICE_NUMBER,NUMBER,MESSAGE+" "+otpString,null,null);
         sms.sendSms(this);
+
 
 
     }

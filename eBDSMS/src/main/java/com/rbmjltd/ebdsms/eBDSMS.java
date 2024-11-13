@@ -8,23 +8,22 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Random;
 
 public class eBDSMS {
     private String apiKey;
     private String number;
     private String message;
-    private String otp;
     private String device;
     private String extra;
     private String others;
 
 
-    public eBDSMS(String apiKey, String number, String message, String otp,
+    public eBDSMS(String apiKey, String number, String message,
                   String device, String extra, String others) {
         this.apiKey = apiKey;
         this.number = number;
         this.message = message;
-        this.otp = otp;
         this.device = device;
         this.extra = extra;
         this.others = others;
@@ -71,5 +70,24 @@ public class eBDSMS {
             // Handle the result (e.g., show a Toast or log the result)
         }
     }
+
+
+    public static class OTP {
+
+        String LATTER = "0987654321";
+        String NUMBER = "1234567890";
+
+        char[] RANDOM = (LATTER+LATTER.toUpperCase()+NUMBER).toCharArray();
+
+        public String OTPString(int lenght) {
+            StringBuilder result = new StringBuilder(lenght);
+            for (int i = 0; i < lenght; i++) {
+                result.append(RANDOM[new Random().nextInt(RANDOM.length)]);
+            }
+            return result.toString();
+        }
+
+    }
+
 }
 
