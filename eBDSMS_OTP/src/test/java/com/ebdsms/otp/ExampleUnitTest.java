@@ -1,4 +1,4 @@
-package com.rbmjltd.ebdsms;
+package com.ebdsms.otp;
 
 import org.junit.Test;
 

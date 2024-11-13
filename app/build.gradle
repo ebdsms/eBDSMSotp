@@ -4,12 +4,13 @@ plugins {
 
 android {
     namespace 'ebdsms.com'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "ebdsms.com"
-        minSdk 19
-        targetSdk 33
+        minSdk 21
+        //noinspection EditedTargetSdkVersion
+        targetSdk 35
         versionCode 1
         versionName "2.0.3"
 
@@ -33,7 +34,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    implementation project(':eBDSMS')
+    implementation project(':eBDSMS_OTP')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
