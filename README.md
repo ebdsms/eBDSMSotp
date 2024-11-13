@@ -22,7 +22,7 @@ dependencyResolutionManagement {
 > Step 2. Add the dependency to your `build.gradle`:
 ``` gradle
 dependencies {
-	        implementation 'com.github.ebdsms:eBDSMS:2.0.1'
+	        implementation 'com.github.ebdsms:eBDSMS:2.0.2'
 	}
 ```
 
@@ -31,17 +31,16 @@ Add the following code inside your `Activity`:
 ``` gradle
 
     private static String API_KEY = "YOUR_API_KEY";
+    private static String DEVICE_NUMBER = "DEVICE_NUMBER";
     private static String NUMBER = "SEND_NUMBER";
     private static String MESSAGE = "MESSAGE";
-    private static String OTP = "OTP";
-    private static String DEVICE_NUMBER = "DEVICE_NUMBER";
 ```  
 
 # SMS Send Process
 Note: Use this code when the sms send button is clicked:
 ``` gradle
-  eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,OTP,DEVICE_NUMBER,null);
-  sms.sendSms(this);
+ eBDSMS sms = new eBDSMS(API_KEY,NUMBER,MESSAGE,null,DEVICE_NUMBER,null,null);
+ sms.sendSms(this);
 ```
 # eBDSMS SDK Integration for Flutter
 This document provides instructions for integrating the eBDSMS Flutter project. 
@@ -126,7 +125,7 @@ To contact me message me on Facebook or email me at:
 
 `Email`: info@ebdsms.com
 
-`Facebook`: <a href="https://www.facebook.com/M220719" rel="nofollow">Monir Hossain (Shohag)</a> 
+`Facebook`: <a href="https://www.facebook.com/M220719" rel="nofollow">Shohag Hossain</a> 
 
 # Authors
 <a href="https://www.ebdsms.com" rel="nofollow">eBDSMS.com</a>
