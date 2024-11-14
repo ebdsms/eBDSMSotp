@@ -152,6 +152,7 @@ public class eBDSMS {
                                     String MESSAGE = messages+" Your OTP is: "+SendOTP;
                                     eBDSMS sms = new eBDSMS(apiKey, device, number, MESSAGE, null, null, context, "");
                                     sms.sendSms(context);
+
                                     test[0] = "true";
                                     Toast.makeText(context, "OTP send successfully.", Toast.LENGTH_SHORT).show();
                                 } else {
