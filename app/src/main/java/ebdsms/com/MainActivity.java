@@ -10,11 +10,11 @@ import com.ebdsms.otp.eBDSMS;
 
 public class MainActivity extends AppCompatActivity {
 
-     String API_KEY = "YOUR_API_KEY";
-     String DEVICE_NUMBER = "DEVICE_NUMBER";
+     String API_KEY = "6ac4a89461dfb5c13198da93d14bcc12b7500834";
+     String DEVICE_NUMBER = "28";
 
-     String NUMBER = "SEND_NUMBER";
-     String MESSAGE = "MESSAGE";
+     String NUMBER = "01716537544";
+     String MESSAGE = "This is Your OTP: ";
 
 
     @Override
@@ -22,22 +22,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*eBDSMS.OTP otp = new eBDSMS.OTP();
-        String otpString = otp.OTPString(6);
-        System.out.println(otpString);*/
 
-       /* eBDSMS sms = new eBDSMS(API_KEY,DEVICE_NUMBER,NUMBER,MESSAGE+" ",null,null);
-        sms.sendSms(this);*/
+        eBDSMS sms = new eBDSMS(MESSAGE, NUMBER, DEVICE_NUMBER, API_KEY, this);
+        sms.sendOTP(success -> {
+            if (success){
+                // OTP sent successfully
+                Toast.makeText(MainActivity.this, "OTP sent successfully.", Toast.LENGTH_SHORT).show();
+            }else {
+                // OTP failed to send
+                Toast.makeText(MainActivity.this, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+            }
+        },4);
+
+
+        String userOtp = "USER_OTP";
+        String userNumber = "USER_NUMBER";
+        eBDSMS sms2 = new eBDSMS(userOtp, userNumber, this);
+
+        sms2.verifyOTP(new eBDSMS.otpVerifyCallback() {
+            @Override
+            public void onResult(boolean success) {
+                if (success) {
+                    // OTP verified successfully
+                    Toast.makeText(MainActivity.this, "OTP verified successfully.", Toast.LENGTH_SHORT).show();
+                }else {
+                    // OTP verification failed
+                    Toast.makeText(MainActivity.this, "Failed to verify OTP", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
 
-        eBDSMS sms = new eBDSMS(API_KEY,DEVICE_NUMBER,NUMBER,MESSAGE,null,null,this, "");
-
-        if (sms.SendOTP("01716537544","This is message",5).equals("true")){
-            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-        }
 
     }
 }

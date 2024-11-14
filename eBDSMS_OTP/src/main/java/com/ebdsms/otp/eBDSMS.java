@@ -1,5 +1,6 @@
 package com.ebdsms.otp;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -24,62 +25,183 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class eBDSMS {
 
-    private ProgressDialog progressDialog;
-
-    private String apiKey;
-    private String number;
-    private String message;
-    private String device;
-    private String extra;
-    private String others;
+    private String otp;
     private Context context;
-    private String result;
+    private String API_KEY;
+    private String DEVICE_NUMBER;
+    private String NUMBER;
+    private String MESSAGE;
+    private ProgressDialog progressDialog;
+    private String userNumber;
+    private String userOtp;
 
     static {
         System.loadLibrary("native-lib");
     }
 
     static native String getKey();
+
     static native String getBAS1();
-    private String APIKEY, BASEURL;
+    static native String getBAS2();
+
+    private String APIKEY, BASEURL, BASEURL2;
 
 
-    public eBDSMS(String apiKey, String number, String message, String device, String extra, String others, Context context, String result) {
-        this.apiKey = apiKey;
-        this.number = number;
-        this.message = message;
-        this.device = device;
-        this.extra = extra;
-        this.others = others;
+    public eBDSMS(String MESSAGE, String NUMBER, String DEVICE_NUMBER, String API_KEY, Context context) {
+        //this.result = result;
+        this.MESSAGE = MESSAGE;
+        this.NUMBER = NUMBER;
+        this.DEVICE_NUMBER = DEVICE_NUMBER;
+        this.API_KEY = API_KEY;
         this.context = context;
-        this.result = result;
 
+        //init progress dialog
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
+
         /* decode data */
         APIKEY = new String(Base64.decode(getKey(), Base64.DEFAULT));
         BASEURL = new String(Base64.decode(getBAS1(), Base64.DEFAULT));
     }
 
-    public void sendSms(Context context) {
-        new SendSmsTask().execute();
+    public eBDSMS(String userOtp, String userNumber, Context context) {
+        this.userOtp = userOtp;
+        this.userNumber = userNumber;
+        this.context = context;
+
+        //init progress dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+
+        /* decode data */
+        APIKEY = new String(Base64.decode(getKey(), Base64.DEFAULT));
+        BASEURL2 = new String(Base64.decode(getBAS2(), Base64.DEFAULT));
     }
 
-    private class SendSmsTask extends AsyncTask<Void, Void, String> {
+    public interface OTPCallback {
+        void onResult(boolean success);
+    }
+
+    public static class OTP {
+
+        String LATTER = "0987654321";
+        String NUMBER = "1234567890";
+
+        char[] RANDOM = (LATTER+LATTER.toUpperCase()+NUMBER).toCharArray();
+
+        public String OTPString(int length) {
+            StringBuilder result = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                result.append(RANDOM[new Random().nextInt(RANDOM.length)]);
+            }
+            return result.toString();
+        }
+
+    }
+
+    public void sendOTP(OTPCallback callback, int length) {
+        try {
+            progressDialog.show();
+            RequestQueue queue = Volley.newRequestQueue(context);
+            String url = BASEURL;
+            OTP otpGenerator = new OTP();
+            otp = otpGenerator.OTPString(length);
+
+//            String otp = UUID.randomUUID().toString().substring(0, 6);
+
+            @SuppressLint("SetTextI18n") StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    response -> {
+                        progressDialog.dismiss();
+                        if (response != null) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                String error = jsonResponse.getString("error");
+                                String message = jsonResponse.getString("message");
+
+                                if (error.equals("false") && message.equals("Data added successfully.")) {
+                                    new SendSmsTask(success -> {
+                                        if (success) {
+                                            // SMS sent successfully
+                                            Toast.makeText(context, "OTP sent successfully.", Toast.LENGTH_SHORT).show();
+                                            callback.onResult(true);
+                                        } else {
+                                            // SMS failed to send
+                                            Toast.makeText(context, "Failed to send OTP", Toast.LENGTH_SHORT).show();
+                                            callback.onResult(false);
+                                        }
+                                    }).execute();
+
+                                } else {
+                                    Toast.makeText(context, "Failed to send OTP.", Toast.LENGTH_SHORT).show();
+                                    callback.onResult(false);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                callback.onResult(false);
+                            }
+                        } else {
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            callback.onResult(false);
+                        }
+                    }, error -> {
+                progressDialog.dismiss();
+                Toast.makeText(context, NUMBER + " number already sent an OTP!", Toast.LENGTH_SHORT).show();
+                callback.onResult(false);
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("api-key", APIKEY);
+                    return map;
+                }
+
+                @NonNull
+                @Override
+                protected Map<String, String> getParams() {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("number", NUMBER);
+                    map.put("otp", otp);
+                    map.put("time", String.valueOf(System.currentTimeMillis()));
+                    return map;
+                }
+            };
+
+            queue.add(stringRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onResult(false);
+        }
+    }
+
+    public interface SmsCallback {
+        void onResult(boolean success);
+    }
+
+    private class SendSmsTask extends AsyncTask<Void, Void, Boolean> {
+        private final SmsCallback callback;
+
+        public SendSmsTask(SmsCallback callback) {
+            this.callback = callback;
+        }
+
         @Override
-        protected String doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             String result = "";
             try {
+                String msg = MESSAGE + otp;
                 String baseUrl = "https://client.ebdsms.com/services/send.php";
-                String urlStr = baseUrl + "?key=" + apiKey +
-                        "&number=" + number +
-                        "&message=" + message +
-                        "&devices=" + device +
+                String urlStr = baseUrl + "?key=" + API_KEY +
+                        "&number=" + NUMBER +
+                        "&message=" + msg +
+                        "&devices=" + DEVICE_NUMBER +
                         "&type=sms&prioritize=0";
 
                 URL url = new URL(urlStr);
@@ -95,90 +217,74 @@ public class eBDSMS {
                     result += inputLine;
                 }
                 in.close();
+
+                // Check if result contains a success indicator (modify based on actual response format)
+                return result.contains("success");
+
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
-            return result;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            // Handle the result (e.g., show a Toast or log the result)
-        }
-    }
-
-
-    public static class OTP {
-
-        String LATTER = "0987654321";
-        String NUMBER = "1234567890";
-
-        char[] RANDOM = (LATTER+LATTER.toUpperCase()+NUMBER).toCharArray();
-
-        public String OTPString(int lenght) {
-            StringBuilder result = new StringBuilder(lenght);
-            for (int i = 0; i < lenght; i++) {
-                result.append(RANDOM[new Random().nextInt(RANDOM.length)]);
+        protected void onPostExecute(Boolean success) {
+            if (callback != null) {
+                callback.onResult(success);
             }
-            return result.toString();
         }
-
     }
 
 
-    public String SendOTP(String number, String messages, int length) {
-        final String[] test = {null};
+    public interface otpVerifyCallback {
+        void onResult(boolean success);
+    }
+    public void verifyOTP(otpVerifyCallback callback) {
         try {
+            progressDialog.show();
+
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(context);
-            String url = BASEURL;
-            OTP otp = new OTP();
-            String SendOTP = otp.OTPString(length);
-
+            String url = BASEURL2;
 
             // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+            @SuppressLint("SetTextI18n") StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
+                        progressDialog.dismiss();
                         if (response != null) {
-                            progressDialog.dismiss();
+                            // Parse JSON
                             JSONObject jsonResponse = null;
                             try {
                                 jsonResponse = new JSONObject(response);
                                 String error = jsonResponse.getString("error");
                                 String message = jsonResponse.getString("message");
 
-                                if (error.equals("false") && message.equals("Data added successfully.")) {
+                                // Get nested "data" JSON object
+                                if (error.equals("false") && message.equals("OTP found.")) {
+                                    JSONObject data = jsonResponse.getJSONObject("data");
+                                    String otp1 = data.getString("otp"); // server otp
 
-                                    String MESSAGE = messages+" Your OTP is: "+SendOTP;
-                                    eBDSMS sms = new eBDSMS(apiKey, device, number, MESSAGE, null, null, context, "");
-                                    sms.sendSms(context);
+                                    if (userOtp.equals(otp1)) {
+                                        callback.onResult(true);
+                                    } else {
+                                        callback.onResult(false);
+                                    }
 
-                                    test[0] = "true";
-                                    Toast.makeText(context, "OTP send successfully.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(context, "Failed to send otp.", Toast.LENGTH_SHORT).show();
-                                    test[0] = "false";
+                                    // failed
+                                    callback.onResult(false);
                                 }
                             } catch (JSONException e) {
-                                test[0] = "false";
+                                callback.onResult(false);
                                 throw new RuntimeException(e);
                             }
-
                         } else {
-                            progressDialog.dismiss();
-                            test[0] = "false";
-                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            callback.onResult(false);
                         }
 
                     }, error -> {
-                test[0] = "false";
-                try {
-                    Toast.makeText(context, number + " number already send an otp!", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, number + " number already send an otp!", Toast.LENGTH_SHORT).show();
-                }
                 progressDialog.dismiss();
+                callback.onResult(false);
             }) {
                 @Override
                 public Map<String, String> getHeaders() {
@@ -191,24 +297,19 @@ public class eBDSMS {
                 @Override
                 protected Map<String, String> getParams() {
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("number", number);
-                    map.put("otp", SendOTP);
-                    map.put("time", String.valueOf(System.currentTimeMillis()));
+                    map.put("number", userNumber);
                     return map;
                 }
             };
 
             // Add the request to the RequestQueue.
             queue.add(stringRequest);
+
         } catch (Exception e) {
             e.printStackTrace();
-            test[0] = "false";
+            callback.onResult(false);
         }
-
-        return test[0];
     }
-
-
 
 }
 
